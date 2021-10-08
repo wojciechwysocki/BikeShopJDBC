@@ -46,7 +46,7 @@ public class Controller {
         var sql = "SELECT id, name, description, price FROM bikes ORDER BY name, id LIMIT ?,? ";
         return jdbcTemplate.query(sql, ps -> {
             ps.setInt(1, numberOfPages * page);
-            ps.setInt(2, 2);
+            ps.setInt(2, numberOfPages);
         }, BikesExtract::extract);
     }
 
