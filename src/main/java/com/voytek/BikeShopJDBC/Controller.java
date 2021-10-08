@@ -27,7 +27,7 @@ public class Controller {
                     ps.setString(2, bike.getDescription());
                     ps.setInt(3, bike.getPrice());
                 });
-        var sqlRead = "SELECT * FROM bikes WHERE name=?";
+        var sqlRead = "SELECT id, name, description, price FROM bikes WHERE name=?";
         return jdbcTemplate.query(sqlRead, ps -> {
             ps.setString(1, bike.getName());
         }, BikesExtract::extract);
@@ -36,6 +36,18 @@ public class Controller {
     @GetMapping("/bike")
     public List<Bikes> getAllBikes() {
         return jdbcTemplate.query("SELECT id, name, description, price FROM bikes", BikesExtract::extract);
+    }
+
+
+    @GetMapping("/bike/page/{page}")
+    public List<Bikes> getAllBikesPagedSorted(@PathVariable int page) {
+        var numberOfPages = 3;
+
+        var sql = "SELECT id, name, description, price FROM bikes ORDER BY name, id LIMIT ?,? ";
+        return jdbcTemplate.query(sql, ps -> {
+            ps.setInt(1, numberOfPages * page);
+            ps.setInt(2, 2);
+        }, BikesExtract::extract);
     }
 
     @GetMapping("/bike/{id}")
